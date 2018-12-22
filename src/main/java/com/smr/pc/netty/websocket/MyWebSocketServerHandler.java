@@ -1,16 +1,18 @@
 package com.smr.pc.netty.websocket;
 
+import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
+import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +28,8 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
 
     private static final Logger logger = Logger.getLogger(WebSocketServerHandshaker.class.getName());
     private WebSocketServerHandshaker handshaker;
+
+    private static ConcurrentHashMap<String,Channel> channelsMap = new ConcurrentHashMap<String,Channel>();
 
     /*@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -151,6 +155,32 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
                     "%s frame types not supported", frame.getClass().getName()));
         }
 
+        // routing 消息来源哪个socket
+
+        System.out.println("Routing ============ ");
+        if("spotws".equals(ctx.attr(AttributeKey.valueOf("type")).get())){
+
+
+            // spotws的处理
+
+
+            System.out.println("Routing spotws .. ");
+        }else if("futurews".equals(ctx.attr(AttributeKey.valueOf("type")).get())){
+            System.out.println("Routing futurews .. ");
+
+
+            // futurews的处理
+
+
+        }
+        System.out.println("Routing ============ ");
+
+
+
+
+
+
+
         // 返回应答消息
         String request = ((TextWebSocketFrame) frame).text();
         System.out.println("服务端收到：" + request);
@@ -162,7 +192,7 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
         TextWebSocketFrame tws = new TextWebSocketFrame(new Date().toString()
                 + ctx.channel().id() + "：" + request);
         // 群发
-        Global.group.writeAndFlush(tws);
+//        Global.group.writeAndFlush(tws);
         // 返回【谁发的发给谁】
         ctx.channel().writeAndFlush(tws);
     }
@@ -174,18 +204,48 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
      * @param req
      */
     private void handleHttpRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+
+        System.out.println("HTTP握手...");
+
         if (!req.getDecoderResult().isSuccess() || (!"websocket".equals(req.headers().get("Upgrade")))) {
             sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
             return;
         }
+
+
+        // ws分发处理 routing
+        HttpMethod method=req.getMethod();
+        String uri=req.getUri();
+        if(method==HttpMethod.GET&&uri.contains("spotws")){
+            //....处理    重点在这里，对于URL的不同，给ChannelHandlerContext设置一个Attribut
+            ctx.attr(AttributeKey.valueOf("type")).set("spotws");
+        }else if(method==HttpMethod.GET&&uri.contains("futurews")){
+            //...处理
+            ctx.attr(AttributeKey.valueOf("type")).set("futurews");
+        }
+
+
+
+
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-                "ws://localhost:8888/websocket", null, false);
+                "ws://localhost:8888/", null, false);
         handshaker = wsFactory.newHandshaker(req);
         if (handshaker == null) {// 无法处理的websocket版本
             WebSocketServerHandshakerFactory.sendUnsupportedWebSocketVersionResponse(ctx.channel());
         } else {// 向客户端发送websocket握手,完成握手
             // 记录管道处理上下文，便于服务器推送数据到客户端
             handshaker.handshake(ctx.channel(), req);
+
+
+//            String uri = req.getUri();
+//
+//            String token = uri.substring(uri.lastIndexOf("/") + 1);
+//
+//            channelsMap.put(token,ctx.channel());
+
+
+
+
         }
     }
 

@@ -32,7 +32,8 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
         //ws://server:port/context_path
         //ws://localhost:9999/ws
         //参数指的是contex_path
-        e.pipeline().addLast(new WebSocketServerProtocolHandler("/spotws"));
+        // 不加这个handle 默认http请求握手
+//        e.pipeline().addLast(new WebSocketServerProtocolHandler("/spotws"));
 
         //websocket定义了传递数据的6中frame类型
 //        e.pipeline().addLast(new TextWebSocketFrameHa());

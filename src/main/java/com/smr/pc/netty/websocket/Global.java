@@ -12,6 +12,11 @@ import io.netty.util.concurrent.GlobalEventExecutor;
  *
  */
 public class Global {
+
     public static ChannelGroup group = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+
+    public static ChannelGroup spotwsGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public static ChannelGroup futurewsGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public static ChannelGroup mktwsGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
 }
