@@ -1,6 +1,5 @@
 package com.smr.pc.netty.websocket;
 
-import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -10,8 +9,6 @@ import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,26 +27,6 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
     private WebSocketServerHandshaker handshaker;
 
     private static ConcurrentHashMap<String,Channel> channelsMap = new ConcurrentHashMap<String,Channel>();
-
-    /*@Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
-        if(msg instanceof TextWebSocketFrame){
-            TextWebSocketFrame textWebSocketFrame = (TextWebSocketFrame)msg;
-
-            System.out.println("收到消息："+textWebSocketFrame.text());
-
-            */
-
-    /**
-     * writeAndFlush接收的参数类型是Object类型，但是一般我们都是要传入管道中传输数据的类型，比如我们当前的demo
-     * 传输的就是TextWebSocketFrame类型的数据
-     *//*
-            ctx.channel().writeAndFlush(new TextWebSocketFrame("服务时间："+ LocalDateTime.now()));
-
-        }
-
-    }*/
 
 
     /**
@@ -80,7 +57,7 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
 
 
     /**
-     * 接受到客户端消息
+     * 接受到客户端消息,处理业务逻辑
      *
      * @param ctx
      * @param msg
@@ -158,14 +135,14 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
         // routing 消息来源哪个socket
 
         System.out.println("Routing ============ ");
-        if("spotws".equals(ctx.attr(AttributeKey.valueOf("type")).get())){
+        if("spotws".equals(ctx.attr(AttributeKey.valueOf("route")).get())){
 
 
             // spotws的处理
 
 
             System.out.println("Routing spotws .. ");
-        }else if("futurews".equals(ctx.attr(AttributeKey.valueOf("type")).get())){
+        }else if("futurews".equals(ctx.attr(AttributeKey.valueOf("route")).get())){
             System.out.println("Routing futurews .. ");
 
 
@@ -218,10 +195,10 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
         String uri=req.getUri();
         if(method==HttpMethod.GET&&uri.contains("spotws")){
             //....处理    重点在这里，对于URL的不同，给ChannelHandlerContext设置一个Attribut
-            ctx.attr(AttributeKey.valueOf("type")).set("spotws");
+            ctx.attr(AttributeKey.valueOf("route")).set("spotws");
         }else if(method==HttpMethod.GET&&uri.contains("futurews")){
             //...处理
-            ctx.attr(AttributeKey.valueOf("type")).set("futurews");
+            ctx.attr(AttributeKey.valueOf("route")).set("futurews");
         }
 
 

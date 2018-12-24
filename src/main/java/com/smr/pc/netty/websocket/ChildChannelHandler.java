@@ -4,8 +4,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
@@ -24,6 +22,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
         e.pipeline().addLast("http-codec",new HttpServerCodec());
 
         //netty是基于分段请求的，HttpObjectAggregator的作用是将请求分段再聚合,参数是聚合字节的最大长度
+        //默认http请求是分段传输的  httpheaders + httpcontent
         e.pipeline().addLast("aggregator",new HttpObjectAggregator(65536));
 
         //以块的方式来写的处理器
@@ -47,6 +46,9 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
 
 
+        // 空闲检测  没改好
+//        e.pipeline().addLast("heart-beat",new IdleStateHandler(5,7,10,TimeUnit.SECONDS));
+//        e.pipeline().addLast("heart-beat-handler",new MyHeartBeatHandler());
 
 
 
