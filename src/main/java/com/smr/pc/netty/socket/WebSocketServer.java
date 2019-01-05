@@ -10,10 +10,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public class NettyServer {
+public class WebSocketServer {
 
     private int port;
-    public NettyServer(int port){
+    public WebSocketServer(int port){
         this.port = port;
     }
 
@@ -29,7 +29,7 @@ public class NettyServer {
             b.group(bossGroup, workGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new ChildChannelHandler())
+                    .childHandler(new WebSocketServerInitializer())
 
                     //对Channel进行一些配置
                     //注意以下是socket的标准参数
@@ -58,7 +58,7 @@ public class NettyServer {
     }
 
     public static void main(String[] args) {
-        new NettyServer(8888).start();
+        new WebSocketServer(8888).start();
     }
 
 }

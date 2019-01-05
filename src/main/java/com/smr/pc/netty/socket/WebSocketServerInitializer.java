@@ -13,7 +13,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
  * @date 2018/12/21
  *
  */
-public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
+public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel e) throws Exception {
@@ -48,7 +48,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
         // 空闲检测  没改好
 //        e.pipeline().addLast("heart-beat",new IdleStateHandler(5,7,10,TimeUnit.SECONDS));
-//        e.pipeline().addLast("heart-beat-handler",new MyHeartBeatHandler());
+//        e.pipeline().addLast("heart-beat-handler",new HeartBeatHandler());
 
 
 
@@ -56,7 +56,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
 
         // 自定义的handler
-        e.pipeline().addLast("handler",new MyWebSocketServerHandler());
+        e.pipeline().addLast("handler",new WebSocketServerHandler());
     }
 
 }

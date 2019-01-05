@@ -10,7 +10,7 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @author QJ
  * @date 2018/12/22
  */
-public class MyHeartBeatHandler extends ChannelHandlerAdapter {
+public class HeartBeatHandler extends ChannelHandlerAdapter {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {

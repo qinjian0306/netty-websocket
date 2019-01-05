@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  *
  */
 @ChannelHandler.Sharable
-public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
+public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private static final Logger logger = Logger.getLogger(WebSocketServerHandshaker.class.getName());
     private WebSocketServerHandshaker handshaker;

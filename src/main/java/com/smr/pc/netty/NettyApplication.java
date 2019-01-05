@@ -10,7 +10,7 @@ public class NettyApplication {
         SpringApplication.run(NettyApplication.class, args);
 
         // 启动netty服务
-//        new NettyServer(8888).start();
+//        new WebSocketServer(8888).start();
     }
 
 }
