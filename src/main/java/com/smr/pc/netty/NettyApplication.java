@@ -1,6 +1,5 @@
 package com.smr.pc.netty;
 
-import com.smr.pc.netty.websocket.NettyServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,7 +10,7 @@ public class NettyApplication {
         SpringApplication.run(NettyApplication.class, args);
 
         // 启动netty服务
-        new NettyServer(8888).start();
+//        new NettyServer(8888).start();
     }
 
 }

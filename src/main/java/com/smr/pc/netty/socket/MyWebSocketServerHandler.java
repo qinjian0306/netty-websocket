@@ -1,4 +1,4 @@
-package com.smr.pc.netty.websocket;
+package com.smr.pc.netty.socket;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -118,6 +118,7 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
             handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame
                     .retain());
             System.out.println("关闭socket");
+            return;
         }
         // 判断是否ping消息
         if (frame instanceof PingWebSocketFrame) {
@@ -183,11 +184,11 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
     private void handleHttpRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
 
         System.out.println("HTTP握手...");
-
-        if (!req.getDecoderResult().isSuccess() || (!"websocket".equals(req.headers().get("Upgrade")))) {
-            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
-            return;
-        }
+//
+//        if (!req.getDecoderResult().isSuccess() || (!"socket".equals(req.headers().get("Upgrade")))) {
+//            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
+//            return;
+//        }
 
 
         // ws分发处理 routing
@@ -251,4 +252,6 @@ public class MyWebSocketServerHandler extends SimpleChannelInboundHandler<Object
     private static boolean isKeepAlive(FullHttpRequest req) {
         return false;
     }
+
+
 }

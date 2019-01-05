@@ -1,4 +1,4 @@
-package com.smr.pc.netty.websocket;
+package com.smr.pc.netty.socket;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;

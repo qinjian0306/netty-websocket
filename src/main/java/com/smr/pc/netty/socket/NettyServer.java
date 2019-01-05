@@ -1,4 +1,4 @@
-package com.smr.pc.netty.websocket;
+package com.smr.pc.netty.socket;
 
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -20,9 +20,7 @@ public class NettyServer {
 
     public void start(){
 
-        // 主从多线程模型 boss work均为线程池
-        // 默认线程数等于CUP核心线程数 * 2
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workGroup = new NioEventLoopGroup();
 
         try {
@@ -57,6 +55,10 @@ public class NettyServer {
             workGroup.shutdownGracefully();
         }
 
+    }
+
+    public static void main(String[] args) {
+        new NettyServer(8888).start();
     }
 
 }
