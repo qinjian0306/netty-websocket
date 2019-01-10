@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  *
  * @author QJ
  * @date 2018/12/21
- *
  */
 @ChannelHandler.Sharable
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
@@ -26,7 +25,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private static final Logger logger = Logger.getLogger(WebSocketServerHandshaker.class.getName());
     private WebSocketServerHandshaker handshaker;
 
-    private static ConcurrentHashMap<String,Channel> channelsMap = new ConcurrentHashMap<String,Channel>();
+    private static ConcurrentHashMap<String, Channel> channelsMap = new ConcurrentHashMap<String, Channel>();
 
 
     /**
@@ -40,6 +39,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         // 添加
         Global.group.add(ctx.channel());
         System.out.println(ctx.channel().id() + " : 客户端与服务端连接开启");
+        System.out.println("连接数: " + Global.group.size());
     }
 
     /**
@@ -53,6 +53,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         // 移除
         Global.group.remove(ctx.channel());
         System.out.println(ctx.channel().id() + " : 客户端与服务端连接关闭");
+        System.out.println("连接数: " + Global.group.size());
     }
 
 
@@ -135,7 +136,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
         // routing 消息来源哪个socket
 
-        System.out.println("Routing ============ ");
+      /*  System.out.println("Routing ============ ");
         if("spotws".equals(ctx.attr(AttributeKey.valueOf("route")).get())){
 
 
@@ -151,12 +152,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
 
         }
-        System.out.println("Routing ============ ");
-
-
-
-
-
+        System.out.println("Routing ============ ");*/
 
 
         // 返回应答消息
@@ -183,7 +179,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
      */
     private void handleHttpRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
 
-        System.out.println("HTTP握手...");
+//        System.out.println("HTTP握手...");
 //
 //        if (!req.getDecoderResult().isSuccess() || (!"socket".equals(req.headers().get("Upgrade")))) {
 //            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
@@ -192,17 +188,15 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
 
         // ws分发处理 routing
-        HttpMethod method=req.getMethod();
-        String uri=req.getUri();
-        if(method==HttpMethod.GET&&uri.contains("spotws")){
+        HttpMethod method = req.getMethod();
+        String uri = req.getUri();
+        if (method == HttpMethod.GET && uri.contains("spotws")) {
             //....处理    重点在这里，对于URL的不同，给ChannelHandlerContext设置一个Attribut
             ctx.attr(AttributeKey.valueOf("route")).set("spotws");
-        }else if(method==HttpMethod.GET&&uri.contains("futurews")){
+        } else if (method == HttpMethod.GET && uri.contains("futurews")) {
             //...处理
             ctx.attr(AttributeKey.valueOf("route")).set("futurews");
         }
-
-
 
 
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
@@ -220,8 +214,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 //            String token = uri.substring(uri.lastIndexOf("/") + 1);
 //
 //            channelsMap.put(token,ctx.channel());
-
-
 
 
         }

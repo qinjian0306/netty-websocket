@@ -20,7 +20,6 @@
 </form>
 
 
-
 <script src="reconnecting-websocket.js"></script>
 <script type="text/javascript">
 
@@ -33,15 +32,21 @@
     }
 
     if (window.WebSocket) {
+        /*
+                socket = new ReconnectingWebSocket("ws://localhost:8888/spotWS", null, {
+                    debug: true,
+                    reconnectInterval: 3000,
+                    maxReconnectInterval: 5400
+                });*/
 
-        socket = new ReconnectingWebSocket("ws://localhost:8888/spotws", null, {
-            debug: true,
-            reconnectInterval: 3000,
-            maxReconnectInterval: 5400
-        });
+        socket = new ReconnectingWebSocket("ws://localhost:8888/spotWS");
+        socket.debug = true;
+        socket.reconnectInterval = 2000;
+        // socket.maxReconnectInterval = 10000;
+        // socket.timeoutInterval = 10000;
+        socket.maxReconnectAttempts = 5;
 
-        // socket.debug = true;
-        // socket.timeoutInterval = 5400;
+
 
         socket.onopen = function (event) {
             var ta = document.getElementById('responseText');
@@ -70,8 +75,6 @@
             ta.value = "";
             ta.value = "WebSocket error" + "\r\n";
         };
-
-
 
 
     } else {
